@@ -1,0 +1,15 @@
+# Usages
+
+p = Parking.new(7)
+p.park("KA-7333 Red")
+p.park("KA-4533 White")
+p.park("KA-8588 Red")
+p.registration_numbers_for_cars_with_colour("Red")
+p.slot_numbers_for_cars_with_colour("Red")
+p.status
+p.leave(1)
+
+
+# Test Case Execution
+
+ruby tc_parking.rb

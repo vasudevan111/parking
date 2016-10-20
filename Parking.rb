@@ -13,7 +13,7 @@ class Parking
 
   def park(car)
     (reg_no, color) = car.chomp.split(" ")
-    puts "Reg no is #{reg_no} and color #{color}"
+    #puts "Reg no is #{reg_no} and color #{color}"
     free_slot = get_free_slot()
     free_slot["reg_no"] = reg_no
     free_slot["color"] = color
@@ -21,7 +21,7 @@ class Parking
   end
 
   def get_free_slot
-    @parking_slots.select {|slot| slot["reg_no"].nil?}.first
+      @parking_slots.select {|slot| slot["reg_no"].nil?}.first
   end
 
   def status
@@ -32,17 +32,43 @@ class Parking
   end
 
   def leave(slot_no)
-    slot_to_remove = @parking_slots.select {|slot| slot["slot_no"] == slot_no}
+    slot_to_remove = @parking_slots.select {|slot| slot["slot_no"].to_i == slot_no}.first
     slot_to_remove["reg_no"] = nil
     slot_to_remove["color"] = nil
     puts "Slot number #{slot_no} is free"
+  end
+
+  def registration_numbers_for_cars_with_colour(color)
+    reg_numbers = @parking_slots.select {|slot| slot["color"] == color}.collect {|slot| slot["reg_no"]}
+    reg_numbers.join(",")
+  end
+
+  def slot_numbers_for_cars_with_colour(color)
+    slot_numbers = @parking_slots.select {|slot| slot["color"] == color}.collect {|slot| slot["slot_no"]}
+    puts slot_numbers.join(",")
+  end
+
+  def slot_number_for_registration_number(reg_no)
+    slot = @parking_slots.select {|slot| slot["reg_no"] == reg_no}.first
+    if slot.any?
+      slot["slot_no"]
+    else
+      "Not Found"
+    end
+  end
+
+  def status
+    line = File.open("/tmp/output.tsv",'w')
+    @parking_slots.each do |slot|
+       line.write "#{slot["slot_no"]}\t#{slot["reg_no"]}\t#{slot["color"]}\n"
+    end
+    line.close
+    nil
   end
 end
 
 
 
-# Usages & Write Test Cases
 
-p = Parking.new(7)
-p.park("KA-7333 Red")
-p.leave(1)
+
+
